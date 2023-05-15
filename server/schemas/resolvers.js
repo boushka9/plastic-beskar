@@ -53,7 +53,20 @@ const resolvers = {
         return { token, user };
     },
 
-    //saveBook
+    saveBook: async (parent, { bookData }, context) => {
+        // Find logged in user by their ID, update their array of books by adding new book to it (passed in object) and return updated document
+        if (context.user) {
+          const updatedUser = await User.findByIdAndUpdate(
+            { _id: context.user._id },
+            { $push: { savedBooks: bookData } },
+            { new: true }
+          );
+  
+          return updatedUser;
+        }
+        // Handle unauthorized access
+        throw new AuthenticationError('Please log in to save a book!');
+    },
 
     //removeBook
 
