@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 
 // set token secret and expiration date
-const secret = 'mysecretsshhhhh';
+const secret = process.env.SECRET_KEY;
 const expiration = '2h';
 
 module.exports = {
@@ -23,9 +23,9 @@ module.exports = {
     try {
       const { data } = jwt.verify(token, secret, { maxAge: expiration });
       req.user = data;
-    } catch {
-      console.log('Invalid token');
-      return res.status(400).json({ message: 'invalid token!' });
+    } catch (error) {
+      console.log('Invalid token', error);
+      return res.status(401).json({ message: 'Invalid token!' });
     }
 
     // send to next endpoint
@@ -34,6 +34,11 @@ module.exports = {
   signToken: function ({ username, email, _id }) {
     const payload = { username, email, _id };
 
-    return jwt.sign({ data: payload }, secret, { expiresIn: expiration });
+    try {
+      return jwt.sign({ data: payload }, secret, { expiresIn: expiration });
+    } catch (error) {
+      console.log('Error signing token:', error);
+      throw error; 
+    }
   },
 };
