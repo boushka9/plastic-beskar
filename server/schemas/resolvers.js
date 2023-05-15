@@ -30,7 +30,28 @@ const resolvers = {
         return { token, user };
     },
 
-    //login
+    login: async (parent, { email, password }) => {
+        // Find user by entered email
+        const user = await User.findOne({ email });
+  
+        // If email isn't found
+        if (!user) {
+          throw new AuthenticationError('Incorrect credentials');
+        }
+  
+        //Verify if password is correct
+        const correctPass = await user.isCorrectPassword(password);
+  
+        // If PW incorrect
+        if (!correctPass) {
+          throw new AuthenticationError('Incorrect credentials');
+        }
+        
+        // Create Auth toke once user is logged in
+        const token = signToken(user);
+
+        return { token, user };
+    },
 
     //saveBook
 
