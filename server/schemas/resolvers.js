@@ -68,7 +68,21 @@ const resolvers = {
         throw new AuthenticationError('Please log in to save a book!');
     },
 
-    //removeBook
+    removeBook: async (parent, { bookId }, context) => {
+        // If user + their ID is found (ie. logged in), update the user's savedBook array by removing a book by it's bookId and return updated doc
+        if (context.user) {
+          const updatedUser = await User.findOneAndUpdate(
+            { _id: context.user._id },
+            { $pull: { savedBooks: { bookId } } },
+            { new: true }
+          );
+  
+          return updatedUser;
+        }
+  
+        // Handle unauthorized access
+        throw new AuthenticationError('Please log in to remove a book!');
+    },
 
   }
 };
