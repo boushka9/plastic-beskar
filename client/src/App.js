@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import SearchBooks from './pages/SearchBooks';
 import SavedBooks from './pages/SavedBooks';
 import Navbar from './components/Navbar';
@@ -15,7 +15,7 @@ import {
 
 // Construct our main GraphQL API endpoint
 const httpLink = createHttpLink({
-  uri: 'https://task-tally.herokuapp.com/graphql',
+  uri: 'https://localhost:3001/graphql',
 });
 
 
@@ -43,11 +43,11 @@ function App() {
     <ApolloProvider client={client}>
       <Router>
           <Navbar />
-          <Switch>
+          <Routes>
             <Route exact path='/' component={SearchBooks} />
             <Route exact path='/saved' component={SavedBooks} />
             <Route render={() => <h1 className='display-2'>Wrong page!</h1>} />
-          </Switch>
+          </Routes>
       </Router>
     </ApolloProvider>
   );
